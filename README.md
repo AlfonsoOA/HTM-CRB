@@ -93,21 +93,20 @@ The script performs hypothesis testing for differential protein expression using
 
 ## Requirements
 
-- R ≥ 4.0
-- Libraries:
-  - `ggplot2`
-  - `dplyr`
-  - `readr`
-  - `stringr`
-  - `future`
-  - `janitor`
-  - `tidyr`
+- R (recommended version 4.0 or higher)  
+- R packages: `ggplot2`, `dplyr`, `readr`, `stringr`, `future`, `janitor`, `tidyr`    
+  
+## Usage 
+This script is part of a larger analysis pipeline. Make sure the following inputs are available before running:
 
-Install packages using:
+* Data frames for each statistical method with:
+  *    Adjusted p-values column (e.g., `adj_p_value`, `adj_p_val`, `adj_pvalue`)
+  *    Protein identifiers (`protein_i_ds`, `majority_protein_i_ds`, or `protein_id` depending on method)
+ 
+## Notes 
+The script dynamically detects the correct protein ID and adjusted p-value columns.
 
-```R
-install.packages(c("ggplot2", "dplyr", "readr", "stringr", "janitor", "tidyr", "future"))
+Warnings and debug messages guide the user if expected columns are missing.
 
-
-
+Parallel processing is disabled at the end of the analysis for clean exit.
 
