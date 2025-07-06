@@ -1,7 +1,6 @@
 # HTM-CRB
 
-[Script1](Script1_FilteringAndVisualization.R) : Filtering and Visualization  
-
+[1. Filtering and Visualization](Script1_FilteringAndVisualization.R)  
 
 ## Overview
 
@@ -60,4 +59,55 @@ It also sets up the "Open Sans" font for plotting via the `showtext` package and
 - Subsequent scripts in the project continue downstream analyses and result integration.
 
 ---
+
+[2. Hypothesis Testing Pipeline for Proteomics Differential Analysis](Script2_HypothesisTesting.R)
+
+## Overview
+The script performs hypothesis testing for differential protein expression using multiple statistical methods. It generates and saves diagnostic plots to evaluate the distribution and ranking of adjusted p-values across methods.
+
+## Features
+
+- Supports multiple statistical tests:
+  - t-Student
+  - t-Welch
+  - limma
+  - DEqMS
+  - MSstats
+- Density plots of `-log10(adjusted p-value)` across all methods
+- Ranked line plots of `-log10(adjusted p-value)` for method comparison
+- Automatic detection of protein ID columns and adjusted p-value columns
+- Handles NULL or missing data gracefully
+- Saves plots in high-resolution PNG format
+- Parallelization with `future` package (reset to sequential at the end)
+
+## Outputs
+
+### 1. Density Plot
+- **File**: `density_adj_pvalue_all_<condition1>_vs_<condition2>.png`
+- **Description**: Compares the density distributions of `-log10(adjusted p-value)` for each method.
+- **Highlight**: A vertical red dashed line indicates the significance threshold in `log10` scale.
+
+### 2. Ranked Plot
+- **File**: `ranked_adj_pvalue_lines_<condition1>_vs_<condition2>.png`
+- **Description**: Plots proteins ranked by their significance (`-log10(adjusted p-value)`), comparing the statistical power and ranking behavior of each method.
+
+## Requirements
+
+- R ≥ 4.0
+- Libraries:
+  - `ggplot2`
+  - `dplyr`
+  - `readr`
+  - `stringr`
+  - `future`
+  - `janitor`
+  - `tidyr`
+
+Install packages using:
+
+```R
+install.packages(c("ggplot2", "dplyr", "readr", "stringr", "janitor", "tidyr", "future"))
+
+
+
 
