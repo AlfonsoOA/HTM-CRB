@@ -33,8 +33,8 @@ library(ggplot2)
 library(car)
 library(vegan)
 library(pheatmap)
-library(cowplot) # For clean themes
-library(showtext) # For custom fonts
+library(cowplot)  # clean themes
+library(showtext) # custom fonts
 
 # Add Open Sans font for plotting
 # Open Sans is a Google Font, so showtext can download and use it automatically.
@@ -42,12 +42,13 @@ font_add_google("Open Sans", "Open Sans")
 showtext_auto()
 
 # Define global plot settings
-# AUMENTO AGRESIVO DE LOS TAMAÑOS DE FUENTE
-base_font_size <- 24 # Aumentado significativamente
-title_font_size <- 30 # Aumentado
-axis_title_font_size <- 28 # Aumentado
-axis_text_font_size <- 24 # Aumentado
-dpi_resolution <- 600 # Mantener alta resolución para nitidez al reducir
+# Significant increase in font sizes for emphasis and readability
+base_font_size <- 24       # significantly increased
+title_font_size <- 30      # increased
+axis_title_font_size <- 28 # increased
+axis_text_font_size <- 24  # increased
+dpi_resolution <- 600      # ensure high resolution to preserve clarity when downscaling
+
 
 # --- MAIN FUNCTION TO PROCESS AND ANALYZE A WORK ---
 process_and_analyze_proteingroups <- function(work_name, base_path, condition_patterns, peptide_col_prefix = "Peptides.", intensity_col_prefix = "LFQ.intensity.") {
@@ -82,7 +83,7 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
   
   # 1. Read the proteinGroups.txt file
   if (!file.exists(proteinGroups_file)) {
-    # Usar stop() aquí es apropiado porque el archivo base no existe.
+    # use stop() here if the base file is missing as the analysis cannot proceed.
     stop(paste0("ERROR: The file '", basename(proteinGroups_file), "' not found for ", work_name, ". Please check the path."))
   } else {
     cat(paste("Reading file:", proteinGroups_file, "\n"))
@@ -91,7 +92,7 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
   
   # Check if the file is empty or has issues reading
   if (nrow(protein_groups) == 0) {
-    # Usar stop() aquí también es apropiado porque no hay datos que procesar.
+    # stop() here is also appropriate because there is no data to process
     stop(paste0("ERROR: The file '", basename(proteinGroups_file), "' for ", work_name, " was read but is empty. Cannot proceed."))
   }
   
@@ -122,7 +123,7 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
   cat("\n--------------------------------------------------\n")
   
   if (length(replicas_peptides_cols) == 0 || length(replicas_intensity_cols) == 0) {
-    # Este es un caso crítico: si no hay columnas para analizar, NO se puede continuar.
+    # critical step: if there are no columns to analyze, the process cannot continue.
     stop(paste0("ERROR: No peptide or LFQ intensity columns found for the specified conditions in work ", work_name, ". Cannot proceed with any analysis."))
   }
   
@@ -148,7 +149,7 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
     ungroup()
   
   # 5b. Filter to remove proteins with no identification in any replica (based on LFQ intensity)
-  # Esto es un filtro importante: si una proteína tiene 0 o NA en TODAS sus réplicas, se elimina.
+  # important filter: if a protein has 0 or NA in ALL of its replicates, it is removed.
   protein_groups_filtered <- protein_groups_filtered %>%
     filter(rowSums(select(., all_of(replicas_intensity_cols)), na.rm = TRUE) > 0)
   
@@ -163,7 +164,7 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
   
   # 1. Read the filtered proteinGroups file
   if (!file.exists(output_file_step3)) {
-    # Este caso debería ser raro si el save anterior funcionó, pero lo mantenemos.
+    # This case is uncommon if the previous save worked, but we keep it just in case.
     stop(paste0("ERROR: Filtered file '", basename(output_file_step3), "' not found. This should not happen. Skipping variability analysis, heatmap, or NMDS/ANOSIM.\n"))
   } else {
     cat(paste("Reading filtered file:", output_file_step3, "\n"))
@@ -172,7 +173,7 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
   
   # Check if data frame is empty after filtering
   if (nrow(protein_groups) == 0) {
-    # Este es un punto crítico: si no hay proteínas después del filtrado, no se puede hacer nada.
+    # critical point: if no proteins remain after filtering, nothing can be done.
     stop(paste0("ERROR: Filtered data for work ", work_name, " is empty after cleaning. Cannot proceed with variability analysis, heatmap, or NMDS/ANOSIM."))
   }
   
@@ -192,7 +193,7 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
   cat("\n--------------------------------------------------------------\n")
   
   if (length(lfq_cols_cond1) == 0 || length(lfq_cols_cond2) == 0) {
-    # Este es otro punto crítico. Si no se encuentran las columnas de intensidad esperadas, no se puede proceder.
+    # Another critical point: if the expected intensity columns are not found, processing cannot continue.
     stop(paste0("ERROR: No LFQ Intensity columns found for one or both conditions (", cond1_pattern, ", ", cond2_pattern, ") in work ", work_name, ". Variability analysis, heatmap, or NMDS/ANOSIM will not be performed."))
   }
   
@@ -246,11 +247,13 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
     values_finite <- values[is.finite(values) & values > 0]
     if (length(values_finite) >= 3 && length(values_finite) <= 5000) return(shapiro.test(values_finite)$p.value) else return(NA)
   })
+  
   shapiro_cond2 <- apply(protein_groups, 1, function(row) {
     values <- get_lfq_values(row, lfq_cols_cond2)
     values_finite <- values[is.finite(values) & values > 0]
     if (length(values_finite) >= 3 && length(values_finite) <= 5000) return(shapiro.test(values_finite)$p.value) else return(NA)
   })
+  
   levene_p_value <- apply(protein_groups, 1, function(row) {
     cond1_values <- get_lfq_values(row, lfq_cols_cond1)
     cond2_values <- get_lfq_values(row, lfq_cols_cond2)
@@ -284,6 +287,7 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
     RShapiro_Wilk_p_Cond2 = shapiro_cond2,
     Levene_p_value = levene_p_value
   )
+  
   colnames(variability_data)[2] <- paste0("CV_", cond1_pattern, "_Percent")
   colnames(variability_data)[3] <- paste0("CV_", cond2_pattern, "_Percent")
   colnames(variability_data)[4] <- paste0("Log2FC_", cond2_pattern, "_vs_", cond1_pattern)
@@ -410,39 +414,36 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
   cat(paste0("\n--- STARTING HEATMAP and NMDS/ANOSIM (", work_name, ") ---\n"))
   
   # Prepare data for heatmap and NMDS
-  # MODIFICACIÓN CLAVE AQUÍ: Aseguramos la selección y conversión a matriz de forma robusta
+  # key change: ensure robust selection and conversion to matrix
   # -------------------------------------------------------------------------------------
   
-  # 1. Seleccionar *solo* las columnas de intensidad LFQ para el análisis de visualización.
-  # Usamos `dplyr::select` con `all_of()` para una selección más segura y explícita.
-  # El resultado será un tibble.
+  # 1. select *only* the LFQ intensity columns for visualization analysis.
   lfq_data_selected <- protein_groups %>%
     dplyr::select(all_of(replicas_intensity_cols))
   
-  # 2. Convertir el tibble seleccionado a una matriz numérica.
-  # Esto es fundamental para asegurar que las operaciones posteriores (log2, min)
-  # se realicen sobre un tipo de dato que R espera.
+  # 2. convert the selected tibble (from the previous step) to a numeric matrix.
+  # this is essential to ensure that subsequent operations (log2, min) are performed on the data type r expects.
   lfq_data_numeric_matrix <- as.matrix(lfq_data_selected)
   
-  # 3. Convertir ceros a NA en esta matriz (para que log2(0) no sea -Inf directamente)
+  # 3. convert zeros to NA in this matrix (to avoid log2(0) being -Inf directly)
   lfq_data_numeric_matrix[lfq_data_numeric_matrix == 0] <- NA
   
-  # 4. Aplicar log2. Los NAs seguirán siendo NAs.
+  # 4. apply log2. nAs will remain nAs.
   lfq_data_log2 <- log2(lfq_data_numeric_matrix)
   
   # --- Imputation (temporary for visualization/analysis) ---
   # Find the minimum positive finite value across *all* relevant LFQ data
-  # (usando los datos originales antes de la transformación log2 y la conversión a NA).
-  #
-  # Aquí volvemos a extraer los datos originales de LFQ intensity para calcular el epsilon,
-  # pero asegurándonos de que sea un vector numérico plano usando unlist().
+  # (using the original data before log2 transformation and conversion to NA).
+  
+  # here we extract the original LFQ intensity data again to calculate epsilon,
+  # making sure it is a flat numeric vector using unlist().
   all_original_lfq_values_vector <- unlist(protein_groups %>%
                                              dplyr::select(all_of(replicas_intensity_cols)))
   
-  # Filtrar por valores positivos y finitos
+  # filter by positive and finite values
   positive_finite_values <- all_original_lfq_values_vector[all_original_lfq_values_vector > 0 & is.finite(all_original_lfq_values_vector)]
   
-  # Calcular el mínimo de esos valores
+  # calculate the minimum of those values
   min_val_global_for_imputation <- min(positive_finite_values, na.rm = TRUE)
   
   # If all original LFQ values are 0 or NA, then min_val_global_for_imputation will be Inf
@@ -459,8 +460,8 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
   lfq_data_log2_imputed[is.na(lfq_data_log2_imputed)] <- epsilon_for_imputation
   lfq_data_log2_imputed[is.infinite(lfq_data_log2_imputed)] <- epsilon_for_imputation # This handles -Inf from log2(0)
   
-  # Ahora, `lfq_data_log2_imputed` ya es una matriz con todos los valores numéricos finitos.
-  # Esta es la matriz que se pasa a pheatmap y a vegan.
+  # now, `lfq_data_log2_imputed` is a matrix with all finite numeric values.
+  # this is the matrix passed to pheatmap and vegan.
   lfq_data_matrix <- lfq_data_log2_imputed # Renombrado para claridad, ya es una matriz
   
   # -------------------------------------------------------------------------------------
@@ -486,7 +487,7 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
                width = 8, height = 10, # Adjust these as needed for resolution/number of proteins
                dpi = dpi_resolution,
                gaps_col = cumsum(table(sample_conditions_df$Condition)[unique(sample_conditions_df$Condition)])[-length(unique(sample_conditions_df$Condition))], # Add gaps between conditions
-               # Ajustar fuentes dentro de pheatmap (se escalan con el base_font_size definido globalmente)
+               # adjust fonts within pheatmap (scaled by the globally defined base_font_size)
                main_gp = grid::gpar(fontfamily = "Open Sans", fontsize = title_font_size),
                annotation_legend_param = list(
                  labels_gp = grid::gpar(fontfamily = "Open Sans", fontsize = axis_text_font_size),
@@ -556,14 +557,14 @@ process_and_analyze_proteingroups <- function(work_name, base_path, condition_pa
         # Add labels for samples, adjust position to avoid overlap
         text(nmds_result, display = "sites", labels = rownames(nmds_data), cex = 1.8, pos = 3, font = 2) # AUMENTADO cex de las etiquetas de los puntos
         
-        # AÑADIR RESULTADOS DE ANOSIM AL PLOT
-        # Determinar los límites del plot para posicionamiento (usamos las coordenadas actuales del plot)
+        # add anosim results to the plot
+        # determine plot limits for positioning (using current plot coordinates)
         plot_usr <- par("usr") # user coordinates: [x1, x2, y1, y2]
         
-        # Posicionar en la esquina inferior izquierda, ligeramente desplazado del borde
-        # Usamos los límites del plot directamente y un porcentaje de esos límites para el margen
-        text_x_pos <- plot_usr[1] + (plot_usr[2] - plot_usr[1]) * 0.02 # 2% desde la izquierda
-        text_y_pos <- plot_usr[3] + (plot_usr[4] - plot_usr[3]) * 0.02 # 2% desde abajo
+        # position in the bottom left corner, slightly offset from the edge
+        # use the plot limits directly and a percentage of those limits for the margin
+        text_x_pos <- plot_usr[1] + (plot_usr[2] - plot_usr[1]) * 0.02 # 2% left as reference
+        text_y_pos <- plot_usr[3] + (plot_usr[4] - plot_usr[3]) * 0.02 # 2% bottom as reference 
         
         text(x = text_x_pos, y = text_y_pos,
              labels = anosim_text,
@@ -612,7 +613,7 @@ work_conditions <- list(
 for (work in names(work_conditions)) {
   conditions <- work_conditions[[work]]
   
-  # Llamada a la función principal y manejo de errores/retornos NULL
+  # main function call and handling of errors/null returns
   # 'result' capturará lo que la función devuelva (variability_data o NULL)
   result <- tryCatch({
     process_and_analyze_proteingroups(
@@ -621,24 +622,23 @@ for (work in names(work_conditions)) {
       condition_patterns = conditions
     )
   }, error = function(e) {
-    # Si ocurre un error CATASTRÓFICO (ej. archivo no encontrado, datos de entrada vacíos,
-    # o columnas críticas no halladas) dentro de la función process_and_analyze_proteingroups,
-    # lo capturamos aquí, mostramos un mensaje y devolvemos NULL.
-    cat(paste0("\n--- ERROR CATASTROFICO DURANTE EL PROCESAMIENTO DE LA OBRA: ", work, " ---\n"))
+    # if a dramatic error occurs (e.g. file not found, empty input data, or critical columns not found)
+    # inside the function process_and_analyze_proteingroups, we catch it here, display a message, and return null.
+    cat(paste0("\n--- CATASTROPHIC ERROR DURING WORK PROCESSING: ", work, " ---\n"))
     cat(paste0("Mensaje de error: ", e$message, "\n"))
-    return(NULL) # Devolvemos NULL para indicar que esta obra falló completamente
+    return(NULL) # return null to indicate that this work failed completely
   })
   
-  # Verificamos si la función devolvió NULL (indicando que no pudo completar el procesamiento)
+  # check if the function returned null (indicating it couldn't complete processing)
   if (is.null(result)) {
-    cat(paste0("Saltando el procesamiento adicional para la obra: ", work, " debido a problemas críticos anteriores.\n"))
-    next # Saltamos a la siguiente iteración del bucle 'for'
+    cat(paste0("Skipping additional processing for the work: ", work, " due to previous critical issues.\n"))
+    next # skip to the next iteration of the for loop
   }
   
-  # Si la función completó y devolvió 'variability_data', 'result' contendrá esos datos.
-  # Aquí podrías añadir código para, por ejemplo, almacenar o combinar los resultados
-  # de 'variability_data' de todas las obras que se procesaron correctamente.
-  # Por ahora, simplemente el bucle continuará.
+  # if the function completed and returned 'variability_data', 'result' will contain that data.
+  # here you could add code to, for example, store or combine
+  # the 'variability_data' results from all successfully processed works.
+  # for now, the loop will simply continue.
 }
 
-cat("\n--- PROCESAMIENTO DE TODAS LAS OBRAS COMPLETADO ---\n")
+cat("\n--- PROCESSING OF ALL WORKS COMPLETED ---\n")
