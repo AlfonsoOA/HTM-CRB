@@ -1,5 +1,13 @@
 # HTM-CRB
 
+## Table of Contents
+1. [Filtering and Visualization](#1-filtering-and-visualization)  
+2. [Hypothesis Testing Pipeline for Proteomics Differential Analysis](#2-hypothesis-testing-pipeline-for-proteomics-differential-analysis)  
+3. [ClueGO File Preparation and Intersection Tables Generation](#3-cluego-file-preparation-and-intersection-tables-generation)
+
+
+
+
 [1. Filtering and Visualization](Script1_FilteringAndVisualization.R)  
 
 ## Overview
