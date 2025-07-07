@@ -104,9 +104,97 @@ This script is part of a larger analysis pipeline. Make sure the following input
   *    Protein identifiers (`protein_i_ds`, `majority_protein_i_ds`, or `protein_id` depending on method)
  
 ## Notes 
-The script dynamically detects the correct protein ID and adjusted p-value columns.
+The script dynamically detects the correct protein ID and adjusted p-value columns.  
+Warnings and debug messages guide the user if expected columns are missing.  
+Parallel processing is disabled at the end of the analysis for clean exit.  
+  
+  
+----
+  
+[3. Fold change analysis and protein significance overlap](Script3_BiologicalRelevance.R)
 
-Warnings and debug messages guide the user if expected columns are missing.
+## Overview
 
-Parallel processing is disabled at the end of the analysis for clean exit.
+This script performs an in-depth analysis of significant proteins derived from multiple statistical tests. It focuses on evaluating the consistency of protein significance across methods by examining intersections and differences, particularly regarding fold change (FC) filtering and Bayesian filtering. The goal is to assess the robustness and biological relevance of detected differential proteins.
+
+## Features
+
+- Processes results from various statistical tests (`tstudent`, `twelch`, `msstats`, `bayes`, etc.).
+- Evaluates and classifies proteins based on their inclusion/exclusion after FC and Bayes filtering.
+- Computes descriptive statistics for absolute log2 Fold Changes by group.
+- Generates informative visualizations:
+  - **UpSet plots** showing overlap and discarded protein intersections.
+  - **Boxplots** comparing FC distributions across intersection groups.
+- Performs statistical testing (ANOVA, Tukey HSD) to assess group differences in fold change.
+
+## Outputs
+
+The script generates several outputs for each statistical test analyzed:
+
+- **`<W#>_BioRel_<test_name>_comparison.txt`**
+A detailed text summary including:
+  - FC statistics per group.
+  - Results from ANOVA and Tukey HSD tests.
+  - Protein classification counts.
+
+- **`UpSet_discarded_significant_<test_name>.png`**
+UpSet plot visualizing overlaps among discarded significant proteins due to:
+  - Fold Change filtering.
+  - Bayesian filtering.
+
+- **`Boxplot_absFC_by_Group_<test_name>.png`**
+Boxplot showing distribution of absolute log2 fold changes by intersection group:
+  - Significant proteins retained by both filters.
+  - Discarded proteins.
+  - Other intersection-based classifications.
+
+ - **`Discarded_Significant_Counts_<test_name>.txt`**
+Table summarizing the number of significant proteins discarded by FC and Bayes filters.
+
+## Requirements
+
+- **R** version ≥ 4.0
+- R packages: `dplyr`, `ggplot2`, `UpSetR`, `tibble`, `readr` (optional but recommended for file reading).  
+  
+Ensure your working directory is properly set up with:
+- Filtered and unfiltered result files from multiple statistical tests.
+- Biological relevance filtered files (`*_FC.txt`, `*_Bayes.txt`).
+- Total protein list (`*_proteingroups_filtered.txt`).
+
+## Usage
+
+1. **Prepare Input Files**:
+   Ensure result files are named with the following format:
+   - `W<work_number>_res_<test_name>.txt`
+   - `W<work_number>_biolrel_<test_name>_FC.txt`
+   - `W<work_number>_biolrel_<test_name>_Bayes.txt`
+   - `W<work_number>_proteingroups_filtered.txt`
+
+2. **Define Parameters**:
+   Modify `work_number`, `biol_rel_folder_path_current`, `biol_comparison_folder_path_current`, and `ht_results_folder_path_current` as needed in your script.
+
+3. **Run the Script**:
+   Execute the script in R or RStudio:
+   
+       source("your_script_name.R")
+
+4. Review Outputs:
+Navigate to your output folder to explore the result .txt summaries, UpSet plots, and boxplots.
+
+## Notes
+Proteins are grouped into intersection-based categories such as:
+
+ * Sig_FC_Bayes: Significant in original results and retained by both filters.
+ * Sig_Discarded_FC_Bayes: Significant in original but discarded by both FC and Bayes.
+ * Others include combinations of retention and exclusion.
+ * Statistical analysis requires at least 2 proteins per group. If group sizes are too small, ANOVA and Tukey HSD are skipped with a warning.
+ * UpSet plots are generated only if at least 2 non-empty sets of discarded proteins are available.
+ * The script handles missing or malformed files gracefully with informative messages to aid debugging.
+
+----
+
+
+
+
+
 
