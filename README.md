@@ -22,12 +22,12 @@ This [script]((Script1_FilteringAndVisualization.R)) performs the core data proc
 - R packages: `dplyr`, `tidyr`, `ggplot2`, `car`, `vegan`, `pheatmap`, `cowplot`, `showtext`  
   *(the script automatically installs missing packages if needed)*
 
-## Installation and Loading of Libraries
+## Installation and loading of libraries
 
 The script starts by checking for and installing required packages, then loading them.  
 It also sets up the "Open Sans" font for plotting via the `showtext` package and defines global plot settings including enlarged font sizes and high resolution for better clarity.
 
-## Main Steps
+## Main steps
 
 1. **Data Loading and Preparation**
    - Selects only LFQ intensity columns from the protein groups data.
