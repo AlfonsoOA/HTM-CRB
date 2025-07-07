@@ -2,17 +2,18 @@
 
 ## Table of Contents
 1. [Filtering and Visualization](#1-filtering-and-visualization)  
-2. [Hypothesis Testing Pipeline for Proteomics Differential Analysis](#2-hypothesis-testing-pipeline-for-proteomics-differential-analysis)  
+2. [Hypothesis Testing Pipeline for Proteomics Differential Analysis](2-hypothesis-testing-pipeline-for-proteomics-differential-analysis)
 3. [ClueGO File Preparation and Intersection Tables Generation](#3-cluego-file-preparation-and-intersection-tables-generation)
 
 
+---
 
-
-[1. Filtering and Visualization](Script1_FilteringAndVisualization.R)  
+## 1. Filtering and Visualization
+  
 
 ## Overview
 
-This script performs the core data processing and exploratory analysis of protein group LFQ (Label-Free Quantification) intensity data from mass spectrometry experiments. It prepares the data and generates key visualizations to assess variability and condition differences.
+This [script]((Script1_FilteringAndVisualization.R)) performs the core data processing and exploratory analysis of protein group LFQ (Label-Free Quantification) intensity data from mass spectrometry experiments. It prepares the data and generates key visualizations to assess variability and condition differences.
 
 ## Requirements
 
@@ -49,7 +50,7 @@ It also sets up the "Open Sans" font for plotting via the `showtext` package and
    - Calls the main processing function with error handling to skip failed analyses.
    - Outputs variability metrics and saves all plots and results to disk.
 
----
+
 
 ## Usage
 
@@ -57,7 +58,6 @@ It also sets up the "Open Sans" font for plotting via the `showtext` package and
 - Run the script to process all defined works sequentially.
 - Inspect generated heatmaps, NMDS plots, and ANOSIM results for exploratory insights into proteomic variability and condition effects.
 
----
 
 ## Notes
 
@@ -68,10 +68,10 @@ It also sets up the "Open Sans" font for plotting via the `showtext` package and
 
 ---
 
-[2. Hypothesis Testing Pipeline for Proteomics Differential Analysis](Script2_HypothesisTesting.R)
+## 2. Hypothesis Testing Pipeline for Proteomics Differential Analysis
 
 ## Overview
-The script performs hypothesis testing for differential protein expression using multiple statistical methods. It generates and saves diagnostic plots to evaluate the distribution and ranking of adjusted p-values across methods.
+The [script](Script2_HypothesisTesting.R) performs hypothesis testing for differential protein expression using multiple statistical methods. It generates and saves diagnostic plots to evaluate the distribution and ranking of adjusted p-values across methods.
 
 ## Features
 
