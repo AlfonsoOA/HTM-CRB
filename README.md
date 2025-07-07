@@ -193,6 +193,88 @@ Proteins are grouped into intersection-based categories such as:
 
 ----
 
+[3. ClueGO File Preparation and Intersection Tables Generation](Script4_ClueGO_preparation.R)  
+
+## Overview
+
+This R script automates the preparation of input files for ClueGO analysis by separating UP and DOWN regulated proteins from multiple statistical method results. It also generates intersection tables of protein sets across these methods to assist downstream functional enrichment analysis.
+
+
+## Input Files
+
+For each dataset/work number W#, the script expects the following files organized under the base directory:
+
+- `W#/W#_BioRel/` folder containing:
+  - Files named as `W#_biolrel_<method>_(FC|Bayes).txt`
+    - `<method>` can be `tstudent`, `twelch`, `limma`, `deqms`, or `msstats`.
+  - `W#_resbiolrel_bayes.txt` (copied Bayes results)
+  
+- Optional backup Bayes results located at:
+  - `W#/W#_H_testing/W#_res_bayes.txt`
+
+Each input file must contain at least the columns:
+- `Protein.IDs`
+- `log2FC`
+
+
+## Output Files
+
+The script creates and writes output files under:
+
+- `W#/W#_ClueGO/`
+
+Output files include:
+
+- UP and DOWN protein lists for each input file, named:
+  - `W#_<method>_<criteria>_ClueGO_up.txt`
+  - `W#_<method>_<criteria>_ClueGO_down.txt`
+
+- Intersection tables for UP and DOWN protein sets by criterion (`FC` or `Bayes`):
+  - `Intersection_UP_FC.txt`
+  - `Intersection_UP_Bayes.txt`
+  - `Intersection_DOWN_FC.txt`
+  - `Intersection_DOWN_Bayes.txt`
+
+
+## Workflow
+
+1. **Setup Paths:** Defines paths for the current work number dataset.
+2. **File Collection:** Gathers all relevant input files matching expected patterns.
+3. **UP/DOWN Separation:** For each input file, proteins are separated based on `log2FC` value into UP (`>0`) and DOWN (`<0`) sets.
+4. **Save ClueGO Files:** The separated protein lists are saved as new files in the ClueGO output directory.
+5. **Intersection Tables:** Generates intersection binary tables comparing protein presence across methods for both UP and DOWN proteins, separately for FC and Bayes criteria.
+
+
+## Usage
+
+1. Set the base directory path:
+
+       base_analysis_path <- "path/to/base_directory"
+
+2. Select the work numbers (datasets) to process:
+     
+       work_numbers_to_process <- c(1, 2, 3, 4, 5)
+     
+4. Source or run the script:
+
+       source("script4_cluego_processing.R")
+
+## Requirements
+
+- **R** version ≥ 4.0
+- R packages: `purr`, `stringr`
+  
+## Notes  
+Input files must have consistent naming conventions and contain the required columns.
+
+The script assumes previous steps have prepared these input files correctly.
+
+Duplicate or redundant files are internally handled via unique filtering.
+
+Intersection tables generated provide a binary presence/absence matrix useful for comparative analyses.
+
+Proper directory structure and file organization are essential for smooth execution.
+
 
 
 
