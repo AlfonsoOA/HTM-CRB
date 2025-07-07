@@ -217,4 +217,4 @@ The [script](Script6_Metaanalysis.R) performs a comprehensive meta-analysis on c
 
 ## Contact
 
-For questions or support, please contact [Your Name or Team] at [Alfonso Olaya](AlfonsoOA).
+For questions or support, please contact [Your Name or Team] at [Alfonso Olaya](https://github.com/AlfonsoOA).  
