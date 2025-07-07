@@ -6,10 +6,7 @@
 3. [Fold change analysis and protein significance overlap](#3-fold-change-analysis-and-protein-significance-overlap)
 4. [ClueGO File Preparation and Intersection Tables Generation](#4-cluego-file-preparation-and-intersection-tables-generation)
 5. [ClueGO Analysis Pipeline](5-cluego-analysis-pipeline)
-6. 
-
-
-
+6. [Meta-Analysis Script for ClueGO Enrichment Results](#6-meta-analysis-script-for-cluego-enrichment-results)
 
 
 ---
@@ -363,5 +360,70 @@ The script handles cases with insufficient data or constant values gracefully, s
 
 
 
+## 6. Meta-Analysis Script for ClueGO Enrichment Results
 
+## Overview
+
+This [script](Script6_Metaanalisis.R) performs a comprehensive meta-analysis on consolidated ClueGO enrichment results obtained from multiple studies (works) and conditions. It consolidates raw data files, processes metrics, runs global and ontology-specific statistical tests, and generates publication-quality visualizations for comparative analysis.
+
+## Features
+
+- Creation of necessary output directories if missing.
+- Consolidation of raw ClueGO `.xls` files into TSV format.
+- Processing of consolidated TSVs to extract Jaccard indices and correlation metrics.
+- Global meta-analysis including Kruskal-Wallis and Dunn’s post-hoc tests.
+- Visualization of metric distributions, boxplots grouped by comparison types, and ontology-specific results.
+- Sensitivity analysis excluding one study at a time to assess robustness of findings.
+- Export of detailed statistical results and high-resolution figures.
+
+## Input Requirements
+
+- Raw ClueGO `.xls` files organized in the specified input directory.
+- Configuration variables and lists, including:
+  - `base_analysis_path`
+  - `consolidated_tsvs_folder_path`
+  - `output_results_folder_path`
+  - `meta_analysis_results_folder_path`
+  - Lists for method names (`all_expected_method_names`), fold-change methods (`methods_FC`), Bayesian methods (`methods_Bayes`), and works/directions (`works_list`, `htms`, `cbrs`).
+- Consolidated TSV files must follow naming conventions like `<Work>_0_Enrich_comp_results_<Direction>_all_methods.tsv`.
+
+## Output
+
+- Directories created as needed for consolidated TSVs, analysis results, and meta-analysis outputs.
+- TSV files containing consolidated ClueGO results.
+- Global statistical test result files (`global_stats_meta_analysis_<Metric_Type>.txt`).
+- Sensitivity analysis summary tables (`sensitivity_analysis_results_<Metric_Type>.txt`).
+- Publication-quality PNG figures showing:
+  - Global distributions and comparisons per metric.
+  - Ontology-specific boxplots and sensitivity analysis summaries.
+
+## Usage
+
+1. Ensure all required raw ClueGO files are placed under `base_analysis_path`.
+2. Set all necessary configuration variables and lists prior to running the script.
+3. Run the script in an R environment with required packages installed (`tidyverse`, `ggplot2`, `ggpubr`, `dunn.test`, `patchwork`, `readr`).
+4. Check console logs for progress messages and warnings.
+5. Review outputs in the designated result folders.
+
+## Dependencies
+
+- R packages: `tidyverse`, `ggplot2`, `ggpubr`, `dunn.test`, `patchwork`, `readr`.
+  
+## Script Workflow Summary
+
+1. Create output directories if they don’t exist.
+2. Consolidate ClueGO `.xls` files into TSV format.
+3. Process consolidated TSVs to extract metrics for meta-analysis.
+4. Compile all metric data across works and directions.
+5. Perform global statistical tests (Kruskal-Wallis and Dunn’s tests).
+6. Generate global distribution histograms and boxplots.
+7. Perform ontology-specific analyses with faceted boxplots.
+8. Conduct sensitivity analyses by excluding one work at a time.
+9. Save all statistical results and figures to output directories.
+
+## Contact
+
+For questions or support, please contact [Your Name or Team] at [Alfonso Olaya](@AlfonsoOA).
+
+---
 
