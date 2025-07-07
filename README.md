@@ -2,8 +2,9 @@
 
 ## Table of Contents
 1. [Filtering and Visualization](#1-filtering-and-visualization)  
-2. [Hypothesis Testing Pipeline for Proteomics Differential Analysis](2-hypothesis-testing-pipeline-for-proteomics-differential-analysis)
-3. [ClueGO File Preparation and Intersection Tables Generation](#3-cluego-file-preparation-and-intersection-tables-generation)
+2. [Hypothesis Testing Pipeline for Proteomics Differential Analysis](#2-hypothesis-testing-pipeline-for-proteomics-differential-analysis)  
+3. [Fold change analysis and protein significance overlap](#3-fold-change-analysis-and-protein-significance-overlap)
+
 
 
 ---
@@ -119,11 +120,11 @@ Parallel processing is disabled at the end of the analysis for clean exit.
   
 ----
   
-[3. Fold change analysis and protein significance overlap](Script3_BiologicalRelevance.R)
+## 3. Fold change analysis and protein significance overlap
 
 ## Overview
 
-This script performs an in-depth analysis of significant proteins derived from multiple statistical tests. It focuses on evaluating the consistency of protein significance across methods by examining intersections and differences, particularly regarding fold change (FC) filtering and Bayesian filtering. The goal is to assess the robustness and biological relevance of detected differential proteins.
+This [script]((Script3_BiologicalRelevance.R)) performs an in-depth analysis of significant proteins derived from multiple statistical tests. It focuses on evaluating the consistency of protein significance across methods by examining intersections and differences, particularly regarding fold change (FC) filtering and Bayesian filtering. The goal is to assess the robustness and biological relevance of detected differential proteins.
 
 ## Features
 
