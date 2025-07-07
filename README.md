@@ -4,6 +4,11 @@
 1. [Filtering and Visualization](#1-filtering-and-visualization)  
 2. [Hypothesis Testing Pipeline for Proteomics Differential Analysis](#2-hypothesis-testing-pipeline-for-proteomics-differential-analysis)  
 3. [Fold change analysis and protein significance overlap](#3-fold-change-analysis-and-protein-significance-overlap)
+4. [ClueGO File Preparation and Intersection Tables Generation](#4-cluego-file-preparation-and-intersection-tables-generation)
+5. [ClueGO Analysis Pipeline](5-cluego-analysis-pipeline)
+6. 
+
+
 
 
 
@@ -202,11 +207,11 @@ Proteins are grouped into intersection-based categories such as:
 
 ----
 
-[3. ClueGO File Preparation and Intersection Tables Generation](Script4_ClueGO_preparation.R)  
+## 4. ClueGO File Preparation and Intersection Tables Generation
 
 ## Overview
 
-This R script automates the preparation of input files for ClueGO analysis by separating UP and DOWN regulated proteins from multiple statistical method results. It also generates intersection tables of protein sets across these methods to assist downstream functional enrichment analysis.
+This [script](Script4_ClueGO_preparation.R) automates the preparation of input files for ClueGO analysis by separating UP and DOWN regulated proteins from multiple statistical method results. It also generates intersection tables of protein sets across these methods to assist downstream functional enrichment analysis.
 
 
 ## Input Files
@@ -284,6 +289,77 @@ Intersection tables generated provide a binary presence/absence matrix useful fo
 
 Proper directory structure and file organization are essential for smooth execution.
 
+
+--- 
+
+## 5. ClueGO Analysis Pipeline
+
+This [script](Script5_EnrichmentComparisions.R) performs a comprehensive analysis workflow for ClueGO enrichment results, including data consolidation, statistical testing, and visualization. It processes multiple works and directions, producing consolidated TSV files, statistical summaries, and box plots both per work/direction and globally.
+
+
+## Requirements
+
+- R (version >= 4.0 recommended)  
+- Packages: `tidyverse`, `ggpubr` (for plotting with statistical annotations), `dunn.test` (for Dunn post-hoc tests).
+  
+## Input Data
+
+- Raw ClueGO enrichment result files in `.xls` format, organized by work and direction.  
+- Folder paths for raw input and output folders must be correctly set before running.  
+- Lists of methods (`htms`, `cbrs`, etc.) and expected method names should be predefined in the environment.
+
+## Output
+
+- Consolidated TSV files for each work and direction in the specified output folder.  
+- Statistical test results saved as text files (`Kruskal-Wallis` and `Dunn` post-hoc).  
+- Box plots in PNG format illustrating metric distributions and comparisons, both for individual works/directions and combined globally.
+
+## Usage
+
+1. Set the required input and output folder paths.  
+2. Define the lists of works, methods, and metric names as required.  
+3. Run the script. It will:  
+   - Consolidate `.xls` files into TSVs, filling missing data if necessary.  
+   - Process each consolidated TSV to compute metrics and transformations.  
+   - Aggregate results globally for combined statistical testing and visualization.  
+4. Check the output folders for results and plots.
+
+## Main Steps
+
+1. **Consolidation:**  
+   Converts raw `.xls` enrichment data into unified TSV files per work and regulation direction, handling missing files gracefully.
+
+2. **Processing & Metrics Calculation:**  
+   Reads each consolidated TSV to compute metrics such as Jaccard Index (transformed), Pearson and Spearman correlations, and Euclidean similarity. Results include transformed values for statistical tests.
+
+3. **Statistical Testing:**  
+   Performs Kruskal-Wallis tests for differences among comparison types, followed by Dunn's post-hoc test if significant.
+
+4. **Visualization:**  
+   Generates box plots with jittered points and significance annotations for each metric type, both per work/direction and globally combining all data.
+
+## Statistical Tests
+
+- **Kruskal-Wallis Test:** Non-parametric test to detect differences among multiple groups (comparison types).  
+- **Dunn's Test (Bonferroni correction):** Post-hoc test following significant Kruskal-Wallis to identify which pairs differ.
+
+The script handles cases with insufficient data or constant values gracefully, skipping tests and noting it in output logs.
+
+## Visualization
+
+- Uses `ggpubr::ggboxplot` for box plots with jittered points.  
+- Color-coded by comparison type.  
+- Dynamic labels depending on the metric type.  
+- Statistical annotations for overall and pairwise comparisons displayed on plots.
+
+## Notes
+
+- Ensure all input folders and files are correctly named and accessible.  
+- The script is designed to be robust to missing or incomplete data, but consistent file naming is critical.  
+- Adjust the lists of methods, works, and metrics as necessary to fit your data.  
+- This script is the final stage of a multi-step ClueGO analysis pipeline, integrating results and providing comprehensive summary statistics and plots.
+
+---
 
 
 
